@@ -37,6 +37,15 @@ func New(l *lexer.Lexer) *Parser {
 	return p
 }
 
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(tok token.Type) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", tok, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
+}
+
 func (p *Parser) ParseProgram() *ast.Program {
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
@@ -81,6 +90,8 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.CONST:
 		return p.parseConstStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
 	default:
 		return nil
 	}
@@ -102,6 +113,7 @@ func (p *Parser) parseConstStatement() *ast.ConstStatement {
 		return nil
 	}
 
+	// TODO: Don't skip expression.
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
@@ -109,11 +121,15 @@ func (p *Parser) parseConstStatement() *ast.ConstStatement {
 	return stmt
 }
 
-func (p *Parser) Errors() []string {
-	return p.errors
-}
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{Token: p.curToken}
 
-func (p *Parser) peekError(tok token.Type) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead", tok, p.peekToken.Type)
-	p.errors = append(p.errors, msg)
+	p.nextToken()
+
+	// TODO: Don't skip expression.
+	for !p.curTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+
+	return stmt
 }

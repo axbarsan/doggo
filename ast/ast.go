@@ -36,9 +36,7 @@ type ConstStatement struct {
 	Value Expression
 }
 
-func (cs *ConstStatement) statementNode() {
-
-}
+func (cs *ConstStatement) statementNode() {}
 
 func (cs *ConstStatement) TokenLiteral() string {
 	return cs.Token.Literal
@@ -49,10 +47,19 @@ type Identifier struct {
 	Value string
 }
 
-func (i *Identifier) expressionNode() {
-
-}
+func (i *Identifier) expressionNode() {}
 
 func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
+}
+
+type ReturnStatement struct {
+	Token       token.Token // The token.RETURN token.
+	ReturnValue Expression
+}
+
+func (rs *ReturnStatement) statementNode() {}
+
+func (rs *ReturnStatement) TokenLiteral() string {
+	return rs.Token.Literal
 }
