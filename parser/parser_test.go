@@ -18,6 +18,7 @@ const foobar = 838383;
 	p := New(l)
 
 	program := p.ParseProgram()
+	checkParserErrors(t)(p)
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil.")
 	}
@@ -35,13 +36,28 @@ const foobar = 838383;
 
 	for i, tc := range testCases {
 		stmt := program.Statements[i]
-		if !HandleTestConstStatement(t)(stmt, tc.expectedIdentifier) {
+		if !handleTestConstStatement(t)(stmt, tc.expectedIdentifier) {
 			return
 		}
 	}
 }
 
-func HandleTestConstStatement(t *testing.T) func(ast.Statement, string) bool {
+func checkParserErrors(t *testing.T) func(p *Parser) {
+	return func(p *Parser) {
+		errors := p.Errors()
+		if len(errors) == 0 {
+			return
+		}
+
+		t.Errorf("parser has %d errors", len(errors))
+		for _, msg := range errors {
+			t.Errorf("parser error: %q", msg)
+		}
+		t.FailNow()
+	}
+}
+
+func handleTestConstStatement(t *testing.T) func(ast.Statement, string) bool {
 	return func(s ast.Statement, name string) bool {
 		if s.TokenLiteral() != "const" {
 			t.Errorf("s.TokenLiteral not 'const'. got=%q", s.TokenLiteral())

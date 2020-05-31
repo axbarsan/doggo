@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/axbarsan/doggo/ast"
 	"github.com/axbarsan/doggo/lexer"
 	"github.com/axbarsan/doggo/token"
@@ -18,10 +20,15 @@ type Parser struct {
 
 	curToken  token.Token
 	peekToken token.Token
+
+	errors []string
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{
+		l:      l,
+		errors: []string{},
+	}
 
 	// Read 2 tokens, so curToken and peekToken are both set.
 	p.nextToken()
@@ -65,6 +72,8 @@ func (p *Parser) expectPeek(t token.Type) bool {
 		return true
 	}
 
+	p.peekError(t)
+
 	return false
 }
 
@@ -98,4 +107,13 @@ func (p *Parser) parseConstStatement() *ast.ConstStatement {
 	}
 
 	return stmt
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(tok token.Type) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", tok, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
