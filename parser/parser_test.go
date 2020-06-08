@@ -180,6 +180,8 @@ func TestParsingPrefixExpressions(t *testing.T) {
 		{"-15;", "-", 15},
 		{"!foobar;", "!", "foobar"},
 		{"-foobar;", "-", "foobar"},
+		{"!true;", "!", true},
+		{"!false;", "!", false},
 	}
 
 	for _, tc := range prefixTests {
@@ -247,6 +249,9 @@ func TestParsingInfixExpressions(t *testing.T) {
 		{"5 < 5;", 5, "<", 5},
 		{"5 == 5;", 5, "==", 5},
 		{"5 != 5;", 5, "!=", 5},
+		{"true == true", true, "==", true},
+		{"true != false", true, "!=", false},
+		{"false == false", false, "==", false},
 	}
 
 	for _, tc := range infixTests {
@@ -305,6 +310,8 @@ func testLiteralExpression(t *testing.T) func(ast.Expression, interface{}) bool 
 			return testIntegerLiteral(t)(exp, v)
 		case string:
 			return testIdentifier(t)(exp, v)
+		case bool:
+			return testBooleanLiteral(t)(exp, v)
 		}
 		t.Errorf("type of exp not handled. got=%T", exp)
 
@@ -392,6 +399,22 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"3 + 4 * 5 == 3 * 1 + 4 * 5",
 			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
 		},
+		{
+			"true",
+			"true",
+		},
+		{
+			"false",
+			"false",
+		},
+		{
+			"3 > 5 == false",
+			"((3 > 5) == false)",
+		},
+		{
+			"3 < 5 == true",
+			"((3 < 5) == true)",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -432,5 +455,27 @@ func TestBooleanExpression(t *testing.T) {
 	}
 	if ident.TokenLiteral() != "true" {
 		t.Errorf("ident.TokenLiteral not %s. got=%s", "true", ident.TokenLiteral())
+	}
+}
+
+func testBooleanLiteral(t *testing.T) func(ast.Expression, bool) bool {
+	return func(il ast.Expression, value bool) bool {
+		boolean, ok := il.(*ast.Boolean)
+		if !ok {
+			t.Errorf("il not *ast.Boolean. got=%T", il)
+			return false
+		}
+
+		if boolean.Value != value {
+			t.Errorf("integer.Value not %t. got %t", value, boolean.Value)
+			return false
+		}
+
+		if boolean.TokenLiteral() != fmt.Sprintf("%t", value) {
+			t.Errorf("integer.TokenLiteral not %t. got=%s", value, boolean.TokenLiteral())
+			return false
+		}
+
+		return true
 	}
 }
