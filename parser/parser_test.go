@@ -123,7 +123,7 @@ func TestIdentifierExpression(t *testing.T) {
 	checkParserErrors(t)(p)
 
 	if len(program.Statements) != 1 {
-		t.Fatalf("program doesn't have enoughs statements. got=%d", len(program.Statements))
+		t.Fatalf("program doesn't have enough statements. got=%d", len(program.Statements))
 	}
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
@@ -404,5 +404,33 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		if actual != tc.expected {
 			t.Errorf("expected=%q, got=%q", tc.expected, actual)
 		}
+	}
+}
+
+func TestBooleanExpression(t *testing.T) {
+	input := "true;"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t)(p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program doesn't have enough statements. got=%d", len(program.Statements))
+	}
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+
+	ident, ok := stmt.Expression.(*ast.Boolean)
+	if !ok {
+		t.Fatalf("exp not *ast.Identifier. got=%T", stmt.Expression)
+	}
+	if ident.Value != true {
+		t.Errorf("ident.Value not %s. got=%t", "true", ident.Value)
+	}
+	if ident.TokenLiteral() != "true" {
+		t.Errorf("ident.TokenLiteral not %s. got=%s", "true", ident.TokenLiteral())
 	}
 }
