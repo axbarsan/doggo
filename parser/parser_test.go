@@ -633,3 +633,32 @@ func TestFunctionLiteralParsing(t *testing.T) {
 
 	testInfixExpression(t)(bodyStmt.Expression, "x", "+", "y")
 }
+
+func TestFunctionParameterParsing(t *testing.T) {
+	testCases := []struct {
+		input          string
+		expectedParams []string
+	}{
+		{input: "fn() {};", expectedParams: nil},
+		{input: "fn(x) {};", expectedParams: []string{"x"}},
+		{input: "fn(x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
+	}
+
+	for _, tc := range testCases {
+		l := lexer.New(tc.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t)(p)
+
+		stmt := program.Statements[0].(*ast.ExpressionStatement)
+		function := stmt.Expression.(*ast.FunctionLiteral)
+
+		if len(function.Parameters) != len(tc.expectedParams) {
+			t.Errorf("length parameters wrong. want %d, got=%d\n", len(tc.expectedParams), len(function.Parameters))
+		}
+
+		for i, ident := range tc.expectedParams {
+			testLiteralExpression(t)(function.Parameters[i], ident)
+		}
+	}
+}
