@@ -27,8 +27,11 @@ func TestConstStatements(t *testing.T) {
 	testCases := []struct {
 		input              string
 		expectedIdentifier string
+		expectedValue      interface{}
 	}{
-		{"const x = 5;", "x"},
+		{"const x = 5;", "x", 5},
+		{"const x = true;", "x", true},
+		{"const foobar = y;", "foobar", "y"},
 	}
 
 	for _, tc := range testCases {
@@ -45,6 +48,11 @@ func TestConstStatements(t *testing.T) {
 
 		stmt := program.Statements[0]
 		if !testConstStatement(t)(stmt, tc.expectedIdentifier) {
+			return
+		}
+
+		val := stmt.(*ast.ConstStatement).Value
+		if !testLiteralExpression(t)(val, tc.expectedValue) {
 			return
 		}
 	}
@@ -107,9 +115,15 @@ func TestReturnStatements(t *testing.T) {
 		if !ok {
 			t.Fatalf("stmt not *ast.ReturnStatement. got=%T", stmt)
 		}
+
 		if returnStmt.TokenLiteral() != "return" {
 			t.Fatalf("returnStmt.TokenLiteral not 'return', got %q",
 				returnStmt.TokenLiteral())
+		}
+
+		val := stmt.(*ast.ReturnStatement).ReturnValue
+		if !testLiteralExpression(t)(val, tc.expectedValue) {
+			return
 		}
 	}
 }
