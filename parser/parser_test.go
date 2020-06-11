@@ -435,6 +435,18 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"!(true == true)",
 			"(!(true == true))",
 		},
+		{
+			"a + add(b * c) + d",
+			"((a + add((b * c))) + d)",
+		},
+		{
+			"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))",
+			"add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))",
+		},
+		{
+			"add(a + b + c * d / f + g)",
+			"add((((a + b) + ((c * d) / f)) + g))",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -651,7 +663,10 @@ func TestFunctionParameterParsing(t *testing.T) {
 		checkParserErrors(t)(p)
 
 		stmt := program.Statements[0].(*ast.ExpressionStatement)
-		function := stmt.Expression.(*ast.FunctionLiteral)
+		function, ok := stmt.Expression.(*ast.FunctionLiteral)
+		if !ok {
+			t.Fatalf("stmt.Expression is not ast.FunctionLiteral. got=%T", stmt.Expression)
+		}
 
 		if len(function.Parameters) != len(tc.expectedParams) {
 			t.Errorf("wrong parameters length. want %d, got=%d\n", len(tc.expectedParams), len(function.Parameters))
@@ -700,12 +715,25 @@ func TestCallExpressionParsing(t *testing.T) {
 
 func TestCallExpressionParametersParsing(t *testing.T) {
 	testCases := []struct {
-		input          string
-		expectedParams []string
+		input         string
+		expectedIdent string
+		expectedArgs  []string
 	}{
-		{input: "add();", expectedParams: nil},
-		{input: "add(1);", expectedParams: []string{"1"}},
-		{input: "add(2 * 3, 4 * 5);", expectedParams: []string{"2 * 3", "4 * 5"}},
+		{
+			input:         "add();",
+			expectedIdent: "add",
+			expectedArgs:  []string{},
+		},
+		{
+			input:         "add(1);",
+			expectedIdent: "add",
+			expectedArgs:  []string{"1"},
+		},
+		{
+			input:         "add(1, 2 * 3, 4 + 5);",
+			expectedIdent: "add",
+			expectedArgs:  []string{"1", "(2 * 3)", "(4 + 5)"},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -715,14 +743,23 @@ func TestCallExpressionParametersParsing(t *testing.T) {
 		checkParserErrors(t)(p)
 
 		stmt := program.Statements[0].(*ast.ExpressionStatement)
-		function := stmt.Expression.(*ast.FunctionLiteral)
-
-		if len(function.Parameters) != len(tc.expectedParams) {
-			t.Errorf("wrong parameters length. want %d, got=%d\n", len(tc.expectedParams), len(function.Parameters))
+		exp, ok := stmt.Expression.(*ast.CallExpression)
+		if !ok {
+			t.Fatalf("stmt.Expression is not ast.CallExpression. got=%T", stmt.Expression)
 		}
 
-		for i, ident := range tc.expectedParams {
-			testLiteralExpression(t)(function.Parameters[i], ident)
+		if !testIdentifier(t)(exp.Function, tc.expectedIdent) {
+			return
+		}
+
+		if len(exp.Arguments) != len(tc.expectedArgs) {
+			t.Errorf("wrong arguments length. want %d, got=%d\n", len(tc.expectedArgs), len(exp.Arguments))
+		}
+
+		for i, arg := range tc.expectedArgs {
+			if exp.Arguments[i].String() != arg {
+				t.Errorf("argument %d wrong. want=%q, got=%q", i, arg, exp.Arguments[i].String())
+			}
 		}
 	}
 }
