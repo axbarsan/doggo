@@ -22,7 +22,7 @@ func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 
 	for {
-		_, _ = fmt.Fprintf(out, PROMPT)
+		fmt.Fprintf(out, PROMPT)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -39,13 +39,15 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		_, _ = io.WriteString(out, program.String())
-		_, _ = io.WriteString(out, "\n")
+		io.WriteString(out, program.String())
+		io.WriteString(out, "\n")
 	}
 }
 
 func printParserErrors(out io.Writer, errors []string) {
+	io.WriteString(out, fmt.Sprintf("There are %d errors in your code.\n", len(errors)))
+	io.WriteString(out, " parser errors: \n")
 	for _, msg := range errors {
-		_, _ = io.WriteString(out, "\t"+msg+"\n")
+		io.WriteString(out, "\t"+msg+"\n")
 	}
 }
