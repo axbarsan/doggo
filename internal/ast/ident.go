@@ -5,7 +5,7 @@ import (
 )
 
 type Identifier struct {
-	Token token.Token // The token.IDENT token.
+	Token token.Token // Any identifier.
 	Value string
 }
 

@@ -5,7 +5,7 @@ import (
 )
 
 type IntegerLiteral struct {
-	Token token.Token
+	Token token.Token // Any integer.
 	Value int64
 }
 

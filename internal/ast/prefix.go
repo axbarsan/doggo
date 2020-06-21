@@ -7,7 +7,7 @@ import (
 )
 
 type PrefixExpression struct {
-	Token    token.Token // The prefix token (e.g. '!').
+	Token    token.Token // A prefix token (e.g. 'token.BANG').
 	Operator string
 	Right    Expression
 }

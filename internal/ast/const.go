@@ -7,7 +7,7 @@ import (
 )
 
 type ConstStatement struct {
-	Token token.Token // The token.CONST token.
+	Token token.Token // The 'token.CONST' token.
 	Name  *Identifier
 	Value Expression
 }

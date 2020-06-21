@@ -5,7 +5,7 @@ import (
 )
 
 type Boolean struct {
-	Token token.Token
+	Token token.Token // The 'token.TRUE' or 'token.FALSE' tokens.
 	Value bool
 }
 
