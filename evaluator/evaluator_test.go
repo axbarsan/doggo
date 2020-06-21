@@ -319,3 +319,15 @@ func TestFunctionApplication(t *testing.T) {
 		testIntegerObject(t)(testEval(tc.input), tc.expected)
 	}
 }
+
+func TestClosures(t *testing.T) {
+	input := `
+const newAdder = fn(x) {
+    fn(y) { x + y };
+};
+
+const addTwo = newAdder(2);
+addTwo(2);`
+
+	testIntegerObject(t)(testEval(input), 4)
+}
