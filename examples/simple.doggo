@@ -1,0 +1,20 @@
+const x = 5;
+const y = 235 * 385691 * 12399 / 123219 + 12312;
+
+const average = fn(a, b) {
+    return (a + b) / 2;
+};
+
+const add = fn(a, b) {
+    return a + b;
+};
+
+const calculateResult = fn(a, b, func) {
+    return func(a, b);
+};
+
+if (x > y) {
+    calculateResult(x, y, average);
+} else {
+    calculateResult(x, y, add);
+}
