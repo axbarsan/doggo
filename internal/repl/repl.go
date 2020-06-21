@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/axbarsan/doggo/internal/evaluator"
-	"github.com/axbarsan/doggo/internal/lexer"
-	"github.com/axbarsan/doggo/internal/object"
-	"github.com/axbarsan/doggo/internal/parser"
+	"github.com/axbarsan/doggo/internal/runner"
 )
 
 // REPL stands for 'Read Eval Print Loop'.
@@ -22,7 +19,7 @@ const PROMPT = ">> "
 // the result to the output stream.
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
-	env := object.NewEnvironment()
+	r := runner.New()
 
 	for {
 		fmt.Fprintf(out, PROMPT)
@@ -32,28 +29,11 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		line := scanner.Text()
-		l := lexer.New(line)
-		p := parser.New(l)
+		output := r.Run(line)
 
-		program := p.ParseProgram()
-		if len(p.Errors()) != 0 {
-			printParserErrors(out, p.Errors())
-
-			continue
-		}
-
-		evaluated := evaluator.Eval(program, env)
-		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
+		io.WriteString(out, output)
+		if output != "" {
 			io.WriteString(out, "\n")
 		}
-	}
-}
-
-func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, fmt.Sprintf("There are %d errors in your code.\n", len(errors)))
-	io.WriteString(out, " parser errors: \n")
-	for _, msg := range errors {
-		io.WriteString(out, fmt.Sprintf("\t%s\n", msg))
 	}
 }
