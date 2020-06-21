@@ -12,8 +12,9 @@ func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
 	program := p.ParseProgram()
+	env := object.NewEnvironment()
 
-	return Eval(program)
+	return Eval(program, env)
 }
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -240,6 +241,10 @@ if 10 > 1 {
 `,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
+		{
+			"foobar",
+			"identifier not found: foobar",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -255,5 +260,21 @@ if 10 > 1 {
 		if errObj.Message != tc.expectedMessage {
 			t.Errorf("wrong error message. expected=%q, got=%q", tc.expectedMessage, errObj.Message)
 		}
+	}
+}
+
+func TestConstStatements(t *testing.T) {
+	testCases := []struct {
+		input    string
+		expected int64
+	}{
+		{"const a = 5; a;", 5},
+		{"const a = 5 * 5; a;", 25},
+		{"const a = 5; const b = a; b;", 5},
+		{"const a = 5; const b = a; const c = a + b + 5; c;", 15},
+	}
+
+	for _, tc := range testCases {
+		testIntegerObject(t)(testEval(tc.input), tc.expected)
 	}
 }
