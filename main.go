@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/axbarsan/doggo/repl"
+	"github.com/axbarsan/doggo/internal/repl"
 )
 
 func main() {

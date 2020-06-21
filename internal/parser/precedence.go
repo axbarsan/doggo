@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"github.com/axbarsan/doggo/token"
+	"github.com/axbarsan/doggo/internal/token"
 )
 
 // Types of expressions, in the order of their precedence.
 const (
-	_int = iota
+	_ = iota
 	LOWEST
 	EQUALS      // ==
 	LESSGREATER // > or <

@@ -3,9 +3,9 @@ package evaluator
 import (
 	"testing"
 
-	"github.com/axbarsan/doggo/lexer"
-	"github.com/axbarsan/doggo/object"
-	"github.com/axbarsan/doggo/parser"
+	"github.com/axbarsan/doggo/internal/lexer"
+	"github.com/axbarsan/doggo/internal/object"
+	"github.com/axbarsan/doggo/internal/parser"
 )
 
 func testEval(input string) object.Object {

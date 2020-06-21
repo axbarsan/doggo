@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/axbarsan/doggo/evaluator"
-	"github.com/axbarsan/doggo/lexer"
-	"github.com/axbarsan/doggo/object"
-	"github.com/axbarsan/doggo/parser"
+	"github.com/axbarsan/doggo/internal/evaluator"
+	"github.com/axbarsan/doggo/internal/lexer"
+	"github.com/axbarsan/doggo/internal/object"
+	"github.com/axbarsan/doggo/internal/parser"
 )
 
 // REPL stands for 'Read Eval Print Loop'.

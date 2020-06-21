@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/axbarsan/doggo/ast"
+	"github.com/axbarsan/doggo/internal/ast"
 )
 
 const (

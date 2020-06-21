@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/axbarsan/doggo/ast"
-	"github.com/axbarsan/doggo/lexer"
-	"github.com/axbarsan/doggo/token"
+	"github.com/axbarsan/doggo/internal/ast"
+	"github.com/axbarsan/doggo/internal/lexer"
+	"github.com/axbarsan/doggo/internal/token"
 )
 
 // The parser takes the input text and builds a hierarchical data structure. (AST)

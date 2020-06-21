@@ -3,7 +3,7 @@ package ast
 import (
 	"bytes"
 
-	"github.com/axbarsan/doggo/token"
+	"github.com/axbarsan/doggo/internal/token"
 )
 
 type ConstStatement struct {

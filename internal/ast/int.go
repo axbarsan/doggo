@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"github.com/axbarsan/doggo/token"
+	"github.com/axbarsan/doggo/internal/token"
 )
 
 type IntegerLiteral struct {

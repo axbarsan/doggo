@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"github.com/axbarsan/doggo/token"
+	"github.com/axbarsan/doggo/internal/token"
 )
 
 type Lexer struct {

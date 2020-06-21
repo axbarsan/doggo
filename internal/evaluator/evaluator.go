@@ -3,8 +3,8 @@ package evaluator
 import (
 	"fmt"
 
-	"github.com/axbarsan/doggo/ast"
-	"github.com/axbarsan/doggo/object"
+	"github.com/axbarsan/doggo/internal/ast"
+	"github.com/axbarsan/doggo/internal/object"
 )
 
 var (

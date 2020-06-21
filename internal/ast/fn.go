@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/axbarsan/doggo/token"
+	"github.com/axbarsan/doggo/internal/token"
 )
 
 type FunctionLiteral struct {
