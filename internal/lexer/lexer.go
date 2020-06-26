@@ -37,7 +37,6 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, string(l.ch))
 		}
-
 	case '+':
 		tok = newToken(token.PLUS, string(l.ch))
 	case '-':
@@ -56,6 +55,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LT, string(l.ch))
 	case '>':
 		tok = newToken(token.GT, string(l.ch))
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case ',':
 		tok = newToken(token.COMMA, string(l.ch))
 	case ';':
@@ -141,6 +143,19 @@ func newToken(tokenType token.Type, ch string) token.Token {
 	}
 
 	return t
+}
+
+func (l *Lexer) readString() string {
+	position := l.position + 1
+
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+
+	return l.input[position:l.position]
 }
 
 func isLetter(ch byte) bool {

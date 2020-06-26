@@ -16,8 +16,9 @@ const (
 	EOF     = "EOF"     // End of file.
 
 	// Identifiers and literals.
-	IDENT = "IDENT" // Function / variable name.
-	INT   = "INT"   // Integer.
+	IDENT  = "IDENT"  // Function / variable name.
+	INT    = "INT"    // Integer.
+	STRING = "STRING" // String.
 
 	// Operators.
 	ASSIGN   = "="
