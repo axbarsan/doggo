@@ -1,0 +1,11 @@
+const maxNameLength = 10;
+
+const enterName = fn(name, maxLength) {
+    if (len(name) > maxLength) {
+        return 1;
+    }
+
+    return 0;
+};
+
+enterName("Adrian Barsan", maxNameLength);
