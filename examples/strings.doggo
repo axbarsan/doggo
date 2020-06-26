@@ -1,0 +1,14 @@
+const name = "Adrian";
+const surname = "Barsan";
+
+const mergeNames = fn(n, s) {
+    return n + " " + s;
+};
+
+const myName = mergeNames(name, surname);
+const yourName = mergeNames("Steven", "Spielberg");
+
+fn(n, y) {
+    return n == y;
+}(myName, yourName);
+
