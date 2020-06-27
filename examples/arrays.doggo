@@ -1,0 +1,7 @@
+const simpleArr = [1, 3, 5, 8];
+
+const getFourthItem = fn(array) {
+    return array[3];
+};
+
+getFourthItem(simpleArr);
