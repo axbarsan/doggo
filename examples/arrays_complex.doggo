@@ -1,0 +1,15 @@
+const map = fn(arr, f) {
+    const iter = fn(arr, accumulated) {
+        if (length(arr) == 0) {
+            return accumulated;
+        }
+
+        return iter(tail(arr), push(accumulated, f(arr[0])));
+    };
+
+    return iter(arr, []);
+};
+
+const array = [1, 3, 5, 91, 23];
+const double = fn(x) { return x * 2; };
+map(array, double);
