@@ -1,7 +1,7 @@
 const simpleArr = [1, 3, 5, 8];
 
 const getLastItem = fn(array) {
-    return array[length(array) - 1];
+    return array[lastIndex(array)];
 };
 
 getLastItem(simpleArr);

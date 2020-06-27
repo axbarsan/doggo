@@ -383,6 +383,11 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`length([])`, 0},
 		{`length(1)`, "argument to 'length' is not supported, got INTEGER"},
 		{`length("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{`lastIndex([1, 2, 3])`, 2},
+		{`lastIndex([])`, NULL},
+		{`lastIndex([3])`, 0},
+		{`lastIndex("")`, "argument to 'lastIndex' must be of type ARRAY, got STRING"},
+		{`lastIndex([1, 2, 3], [3, 4, 5])`, "wrong number of arguments. got=2, want=1"},
 	}
 
 	for _, tc := range testCases {
@@ -402,6 +407,9 @@ func TestBuiltinFunctions(t *testing.T) {
 			if errObj.Message != expected {
 				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
 			}
+
+		case *object.Null:
+			testNullObject(t)(evaluated)
 		}
 	}
 }

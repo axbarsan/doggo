@@ -8,6 +8,9 @@ var builtin = map[string]*object.Builtin{
 	"length": {
 		Fn: lengthFn,
 	},
+	"lastIndex": {
+		Fn: lastIndexFn,
+	},
 }
 
 func lengthFn(args ...object.Object) object.Object {
@@ -25,4 +28,20 @@ func lengthFn(args ...object.Object) object.Object {
 	default:
 		return newError("argument to 'length' is not supported, got %s", args[0].Type())
 	}
+}
+
+func lastIndexFn(args ...object.Object) object.Object {
+	if len(args) != 1 {
+		return newError("wrong number of arguments. got=%d, want=1", len(args))
+	}
+	if args[0].Type() != object.ARRAY_OBJ {
+		return newError("argument to 'lastIndex' must be of type ARRAY, got %s", args[0].Type())
+	}
+
+	arr := args[0].(*object.Array)
+	if len(arr.Elements) > 0 {
+		return &object.Integer{Value: int64(len(arr.Elements) - 1)}
+	}
+
+	return NULL
 }
