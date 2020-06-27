@@ -8,4 +8,6 @@ const lastItem = getLastItem(simpleArr);
 const newArr = [lastItem, 5, 6];
 
 const newlyAdded = tail(newArr);
-newlyAdded;
+const letsAddSomeMore = push(newlyAdded, 7);
+
+letsAddSomeMore;

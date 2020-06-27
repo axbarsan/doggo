@@ -14,6 +14,9 @@ var builtin = map[string]*object.Builtin{
 	"tail": {
 		Fn: tailFn,
 	},
+	"push": {
+		Fn: pushFn,
+	},
 }
 
 func lengthFn(args ...object.Object) object.Object {
@@ -65,6 +68,26 @@ func tailFn(args ...object.Object) object.Object {
 		newElements = make([]object.Object, length-1, length-1)
 		copy(newElements, arr.Elements[1:length])
 	}
+
+	return &object.Array{Elements: newElements}
+}
+
+func pushFn(args ...object.Object) object.Object {
+	if len(args) != 2 {
+		return newError("wrong number of arguments. got=%d, want=2", len(args))
+	}
+	if args[0].Type() != object.ARRAY_OBJ {
+		return newError("first argument to 'push' must be of type ARRAY, got %s", args[0].Type())
+	}
+
+	arr := args[0].(*object.Array)
+	length := len(arr.Elements)
+
+	// Leaving one extra empty element in the capacity,
+	// so we could append the pushed element later.
+	newElements := make([]object.Object, length, length+1)
+	copy(newElements, arr.Elements)
+	newElements = append(newElements, args[1])
 
 	return &object.Array{Elements: newElements}
 }

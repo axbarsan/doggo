@@ -392,6 +392,11 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`tail([])`, []int{}},
 		{`tail("")`, "argument to 'tail' must be of type ARRAY, got STRING"},
 		{`tail([1, 2, 3], [3, 4, 5])`, "wrong number of arguments. got=2, want=1"},
+		{`push([1, 2, 3], 4)`, []int{1, 2, 3, 4}},
+		{`push([], 5)`, []int{5}},
+		{`push("", 2)`, "first argument to 'push' must be of type ARRAY, got STRING"},
+		{`push([3, 4, 5])`, "wrong number of arguments. got=1, want=2"},
+		{`push([3, 4, 5], 5, 6)`, "wrong number of arguments. got=3, want=2"},
 	}
 
 	for _, tc := range testCases {
