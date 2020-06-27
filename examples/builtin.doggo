@@ -1,7 +1,7 @@
 const maxNameLength = 10;
 
 const enterName = fn(name, maxLength) {
-    if (len(name) > maxLength) {
+    if (length(name) > maxLength) {
         return 1;
     }
 

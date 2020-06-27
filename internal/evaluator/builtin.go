@@ -5,12 +5,12 @@ import (
 )
 
 var builtin = map[string]*object.Builtin{
-	"len": {
-		Fn: lenFn,
+	"length": {
+		Fn: lengthFn,
 	},
 }
 
-func lenFn(args ...object.Object) object.Object {
+func lengthFn(args ...object.Object) object.Object {
 	if len(args) != 1 {
 		return newError("wrong number of arguments. got=%d, want=1", len(args))
 	}
