@@ -4,4 +4,8 @@ const getLastItem = fn(array) {
     return array[lastIndex(array)];
 };
 
-getLastItem(simpleArr);
+const lastItem = getLastItem(simpleArr);
+const newArr = [lastItem, 5, 6];
+
+const newlyAdded = tail(newArr);
+newlyAdded;

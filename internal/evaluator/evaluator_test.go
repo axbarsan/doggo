@@ -388,6 +388,10 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`lastIndex([3])`, 0},
 		{`lastIndex("")`, "argument to 'lastIndex' must be of type ARRAY, got STRING"},
 		{`lastIndex([1, 2, 3], [3, 4, 5])`, "wrong number of arguments. got=2, want=1"},
+		{`tail([1, 2, 3])`, []int{2, 3}},
+		{`tail([])`, []int{}},
+		{`tail("")`, "argument to 'tail' must be of type ARRAY, got STRING"},
+		{`tail([1, 2, 3], [3, 4, 5])`, "wrong number of arguments. got=2, want=1"},
 	}
 
 	for _, tc := range testCases {

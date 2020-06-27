@@ -11,6 +11,9 @@ var builtin = map[string]*object.Builtin{
 	"lastIndex": {
 		Fn: lastIndexFn,
 	},
+	"tail": {
+		Fn: tailFn,
+	},
 }
 
 func lengthFn(args ...object.Object) object.Object {
@@ -44,4 +47,24 @@ func lastIndexFn(args ...object.Object) object.Object {
 	}
 
 	return NULL
+}
+
+func tailFn(args ...object.Object) object.Object {
+	if len(args) != 1 {
+		return newError("wrong number of arguments. got=%d, want=1", len(args))
+	}
+	if args[0].Type() != object.ARRAY_OBJ {
+		return newError("argument to 'tail' must be of type ARRAY, got %s", args[0].Type())
+	}
+
+	arr := args[0].(*object.Array)
+	length := len(arr.Elements)
+	var newElements []object.Object
+
+	if length > 0 {
+		newElements = make([]object.Object, length-1, length-1)
+		copy(newElements, arr.Elements[1:length])
+	}
+
+	return &object.Array{Elements: newElements}
 }
