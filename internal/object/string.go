@@ -1,5 +1,9 @@
 package object
 
+import (
+	"hash/fnv"
+)
+
 const (
 	STRING_OBJ = "STRING"
 )
@@ -14,4 +18,16 @@ func (s *String) Type() Type {
 
 func (s *String) Inspect() string {
 	return s.Value
+}
+
+func (s *String) MapKey() MapKey {
+	h := fnv.New64a()
+	_, _ = h.Write([]byte(s.Value))
+
+	mk := MapKey{
+		Type:  s.Type(),
+		Value: h.Sum64(),
+	}
+
+	return mk
 }
