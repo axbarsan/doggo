@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/axbarsan/doggo/internal/ast"
@@ -851,5 +852,186 @@ func TestParsingIndexExpressions(t *testing.T) {
 
 	if !testInfixExpression(t)(indexExp.Index, 1, "+", 1) {
 		return
+	}
+}
+
+func TestParsingMapLiteralsStringKeys(t *testing.T) {
+	input := `{"one": 1, "two": 2, "three": 3}`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t)
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	m, ok := stmt.Expression.(*ast.MapLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.MapLiteral. got=%T", stmt.Expression)
+	}
+
+	if len(m.Pairs) != 3 {
+		t.Errorf("m.Pairs has wrong length. got=%d", len(m.Pairs))
+	}
+
+	expected := map[string]int64{
+		"one":   1,
+		"two":   2,
+		"three": 3,
+	}
+
+	for key, value := range m.Pairs {
+		literal, ok := key.(*ast.StringLiteral)
+		if !ok {
+			t.Errorf("key is not ast.StringLiteral. got=%T", key)
+		}
+
+		expectedValue := expected[literal.String()]
+
+		testIntegerLiteral(t)(value, expectedValue)
+	}
+}
+
+func TestParsingMapLiteralsIntegerKeys(t *testing.T) {
+	input := `{1: 1, 2: 2, 3: 3}`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t)
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	m, ok := stmt.Expression.(*ast.MapLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.MapLiteral. got=%T", stmt.Expression)
+	}
+
+	if len(m.Pairs) != 3 {
+		t.Errorf("m.Pairs has wrong length. got=%d", len(m.Pairs))
+	}
+
+	expected := map[int64]int64{
+		1: 1,
+		2: 2,
+		3: 3,
+	}
+
+	for key, value := range m.Pairs {
+		literal, ok := key.(*ast.IntegerLiteral)
+		if !ok {
+			t.Errorf("key is not ast.IntegerLiteral. got=%T", key)
+		}
+
+		mapKey, err := strconv.ParseInt(literal.String(), 10, 64)
+		if err != nil {
+			t.Errorf("mapKey does not have a real integer value. got=%T", mapKey)
+		}
+		expectedValue := expected[mapKey]
+
+		testIntegerLiteral(t)(value, expectedValue)
+	}
+}
+
+func TestParsingMapLiteralsBoolKeys(t *testing.T) {
+	input := `{true: 1, false: 2}`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t)
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	m, ok := stmt.Expression.(*ast.MapLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.MapLiteral. got=%T", stmt.Expression)
+	}
+
+	if len(m.Pairs) != 2 {
+		t.Errorf("m.Pairs has wrong length. got=%d", len(m.Pairs))
+	}
+
+	expected := map[bool]int64{
+		true:  1,
+		false: 2,
+	}
+
+	for key, value := range m.Pairs {
+		literal, ok := key.(*ast.Boolean)
+		if !ok {
+			t.Errorf("key is not ast.Boolean. got=%T", key)
+		}
+
+		mapKey, err := strconv.ParseBool(literal.String())
+		if err != nil {
+			t.Errorf("mapKey does not have a real boolean value. got=%T", mapKey)
+		}
+		expectedValue := expected[mapKey]
+
+		testIntegerLiteral(t)(value, expectedValue)
+	}
+}
+
+func TestParsingEmptyMapLiteral(t *testing.T) {
+	input := "{}"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t)(p)
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	m, ok := stmt.Expression.(*ast.MapLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.MapLiteral. got=%T", stmt.Expression)
+	}
+
+	if len(m.Pairs) != 0 {
+		t.Errorf("m.Pairs has wrong length. got=%d", len(m.Pairs))
+	}
+}
+
+func TestParsingMapLiteralsWithExpressions(t *testing.T) {
+	input := `{"one": 0 + 1, "two": 10 - 8, "three": 15 / 5}`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t)(p)
+
+	stmt := program.Statements[0].(*ast.ExpressionStatement)
+	m, ok := stmt.Expression.(*ast.MapLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.MapLiteral. got=%T", stmt.Expression)
+	}
+
+	if len(m.Pairs) != 3 {
+		t.Errorf("m.Pairs has wrong length. got=%d", len(m.Pairs))
+	}
+
+	testCases := map[string]func(ast.Expression){
+		"one": func(e ast.Expression) {
+			testInfixExpression(t)(e, 0, "+", 1)
+		},
+		"two": func(e ast.Expression) {
+			testInfixExpression(t)(e, 10, "-", 8)
+		},
+		"three": func(e ast.Expression) {
+			testInfixExpression(t)(e, 15, "/", 5)
+		},
+	}
+
+	for key, value := range m.Pairs {
+		literal, ok := key.(*ast.StringLiteral)
+		if !ok {
+			t.Errorf("key is not ast.StringLiteral. got=%T", key)
+			continue
+		}
+
+		testFunc, ok := testCases[literal.String()]
+		if !ok {
+			t.Errorf("No test function for key %q found", literal.String())
+			continue
+		}
+
+		testFunc(value)
 	}
 }
