@@ -256,6 +256,10 @@ if 10 > 1 {
 			`"Hello" - "World"`,
 			"unknown operator: STRING - STRING",
 		},
+		{
+			`{"name": "test"}[fn(x) { x }];`,
+			"unusable as map key: FUNCTION",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -485,6 +489,92 @@ func TestArrayIndexExpressions(t *testing.T) {
 		{
 			"[1, 2, 3][-1]",
 			nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		evaluated := testEval(tc.input)
+		integer, ok := tc.expected.(int)
+		if ok {
+			testIntegerObject(t)(evaluated, int64(integer))
+		} else {
+			testNullObject(t)(evaluated)
+		}
+	}
+}
+
+func TestMapLiterals(t *testing.T) {
+	input := `const two = "two";
+{
+	"one": 10 - 9,
+	two: 1 + 1,
+	"thr" + "ee": 6 / 2,
+	4: 4,
+	true: 5,
+	false: 6
+}`
+
+	evaluated := testEval(input)
+	result, ok := evaluated.(*object.Map)
+	if !ok {
+		t.Fatalf("Eval didn't return Map. got=%T (%+v)", evaluated, evaluated)
+	}
+
+	expected := map[object.MapKey]int64{
+		(&object.String{Value: "one"}).MapKey():   1,
+		(&object.String{Value: "two"}).MapKey():   2,
+		(&object.String{Value: "three"}).MapKey(): 3,
+		(&object.Integer{Value: 4}).MapKey():      4,
+		TRUE.MapKey():                             5,
+		FALSE.MapKey():                            6,
+	}
+
+	if len(result.Pairs) != len(expected) {
+		t.Fatalf("Map has wrong number of pairs. got=%d", len(result.Pairs))
+	}
+
+	for expectedKey, expectedValue := range expected {
+		pair, ok := result.Pairs[expectedKey]
+		if !ok {
+			t.Errorf("no pair for given key in Pairs")
+		}
+
+		testIntegerObject(t)(pair.Value, expectedValue)
+	}
+}
+
+func TestMapIndexExpressions(t *testing.T) {
+	testCases := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`{"foo": 5}["foo"]`,
+			5,
+		},
+		{
+			`{"foo": 5}["bar"]`,
+			nil,
+		},
+		{
+			`let key = "foo"; {"foo": 5}[key]`,
+			5,
+		},
+		{
+			`{}["foo"]`,
+			nil,
+		},
+		{
+			`{5: 5}[5]`,
+			5,
+		},
+		{
+			`{true: 5}[true]`,
+			5,
+		},
+		{
+			`{false: 5}[false]`,
+			5,
 		},
 	}
 

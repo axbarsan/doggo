@@ -1,0 +1,13 @@
+const bob = {
+    "name": "Bob",
+    "age": "27"
+};
+
+const maria = {
+    "name": "Maria",
+    "age": "34"
+};
+
+const employees = [bob, maria];
+
+employees[1]["name"];
