@@ -3,7 +3,7 @@
 ## welcome
 
 doggo is an interpreted scripting language that you can use, but you really shouldn't. It was written using Thorsten Ball's [book](https://interpreterbook.com), in order to learn more about programming languages.
-It leverages Go's type system, garbage collector, and pretty much everything else. Did I mention that you shouldn't run this?
+It leverages Go's type system, garbage collector, and pretty much everything else. Did I mention that you shouldn't use this?
 
 ## what's in the box
 
