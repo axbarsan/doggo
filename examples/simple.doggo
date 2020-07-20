@@ -14,7 +14,7 @@ const calculateResult = fn(a, b, func) {
 };
 
 if (x > y) {
-    calculateResult(x, y, average);
+    print(calculateResult(x, y, average));
 } else {
-    calculateResult(x, y, add);
+    print(calculateResult(x, y, add));
 }

@@ -1,6 +1,8 @@
 package evaluator
 
 import (
+	"fmt"
+
 	"github.com/axbarsan/doggo/internal/object"
 )
 
@@ -16,6 +18,9 @@ var builtin = map[string]*object.Builtin{
 	},
 	"push": {
 		Fn: pushFn,
+	},
+	"print": {
+		Fn: printFn,
 	},
 }
 
@@ -90,4 +95,12 @@ func pushFn(args ...object.Object) object.Object {
 	newElements = append(newElements, args[1])
 
 	return &object.Array{Elements: newElements}
+}
+
+func printFn(args ...object.Object) object.Object {
+	for _, arg := range args {
+		fmt.Println(arg.Inspect())
+	}
+
+	return NULL
 }

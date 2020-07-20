@@ -10,4 +10,4 @@ const maria = {
 
 const employees = [bob, maria];
 
-employees[1]["name"];
+print(employees[1]["name"]);

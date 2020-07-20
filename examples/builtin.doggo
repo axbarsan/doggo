@@ -8,4 +8,4 @@ const enterName = fn(name, maxLength) {
     return 0;
 };
 
-enterName("Adrian Barsan", maxNameLength);
+print(enterName("Adrian Barsan", maxNameLength));

@@ -9,6 +9,6 @@ const myName = mergeNames(name, surname);
 const yourName = mergeNames("Steven", "Spielberg");
 
 fn(n, y) {
-    return n == y;
+    print(n == y);
 }(myName, yourName);
 

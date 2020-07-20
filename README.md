@@ -12,7 +12,7 @@ Not much, really.
 | **keyword** | **explanation (sort of)** |
 |---|---|
 | `const` | Declare a constant. What did you expect? |
-| `fn` | Declare a function. Functions are first class citizens, they can be passed around and used pretty much everywhere. |
+| `fn` | Declare a function. Functions are first class citizens, they can be passed around and used pretty much everywhere. Higher order functions and closures are supported. |
 | `if`/`else` | Basic logic gate |
 | `return` | End a function's execution |
 
@@ -40,6 +40,7 @@ For more examples on how the code looks, try one of the examples from the [`exam
 
 | **usage** | **explanation (sort of)** |
 |---|---|
+| `print(variable)` | Print a value to the console |
 | `length(array)` | Get the number of members in an array |
 | `lastIndex(array)` | Get the index of the last array member |
 | `tail(array)` | Return a new copy of an array, with the first member removed |
