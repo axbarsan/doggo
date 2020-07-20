@@ -42,8 +42,19 @@ For more examples on how the code looks, try one of the examples from the [`exam
 |---|---|
 | `length(array)` | Get the number of members in an array |
 | `lastIndex(array)` | Get the index of the last array member |
-| `tail(array)` | Return a new copy of an array, with the first member removed  |
+| `tail(array)` | Return a new copy of an array, with the first member removed |
 | `push(array, item)` | Add a new item at the tail of an array |
+
+#### operators
+
+| **operator** | **explanation (sort of)** |
+|---|---|
+| `+` | Add numbers or concatenate strings |
+| `-` | Subtract a number from another |
+| `*` | Multiply numbers |
+| `/` | Divide a number by another |
+| `!someVariable` | Bang expression, negate a boolean |
+| `someVariable[1]` | Index expression, works for arrays and maps |
 
 ## now really, how do I run this?
 
