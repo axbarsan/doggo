@@ -36,6 +36,15 @@ Not much, really.
  
 For more examples on how the code looks, try one of the examples from the [`examples`](examples) folder.
 
+#### built-in functions
+
+| **usage** | **explanation (sort of)** |
+|---|---|
+| `length(array)` | Get the number of members in an array |
+| `lastIndex(array)` | Get the index of the last array member |
+| `tail(array)` | Return a new copy of an array, with the first member removed  |
+| `push(array, item)` | Add a new item at the tail of an array |
+
 ## now really, how do I run this?
 
 First of all, you need Go installed (>= 1.11). You can download the latest version [here](https://golang.org/dl/).
