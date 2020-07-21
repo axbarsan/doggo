@@ -64,7 +64,7 @@ First of all, you need Go installed (>= 1.11). You can download the latest versi
 Now, here come the commands:
 
 ```nohighlight
-cd project/dir
+cd doggo
 go build
 ```
 
